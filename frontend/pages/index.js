@@ -56,7 +56,7 @@ function App() {
             {words.map((word, index) => (
               <tr key={index}>
                 <td style={{ border: '1px solid black', padding: '0', margin: 0, fontWeight: word.word === pickedWord ? 'bold' : 'normal' }}>{word.word}</td>
-                <td style={{ border: '1px solid black', padding: '0', margin: 0 }}>{(word.probability * 100).toFixed(2)}%</td>
+                <td style={{ border: '1px solid black', padding: '0', margin: 0, fontWeight: word.word === pickedWord ? 'bold' : 'normal'  }}>{(word.probability * 100).toFixed(2)}%</td>
               </tr>
             ))}
           </tbody>
