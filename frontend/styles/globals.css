@@ -1,0 +1,8 @@
+body {
+  font-size: 28px;
+  font-family: sans-serif;
+}
+
+input, button, textarea {
+  font-size: 28px;
+}
