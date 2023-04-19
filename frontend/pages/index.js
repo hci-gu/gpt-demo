@@ -30,18 +30,17 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <label htmlFor="prompt">Enter text prompt:</label>
-      <br />
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <textarea
         style={{ width: '100%', height: '3em' }}
         type="text"
         id="prompt"
+        placeholder='Prompt'
         value={prompt}
         onChange={e => setPrompt(e.target.value)}
       />
       <br />
-      <button onClick={handleButtonClick}>Predict next</button>
+      <button onClick={handleButtonClick}>Predict next token</button>
       <br />
       <br />
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '500px' }}>
@@ -55,13 +54,13 @@ function App() {
           <tbody>
             {words.map((word, index) => (
               <tr key={index}>
-                <td style={{ border: '1px solid black', padding: '0', margin: 0, fontWeight: word.word === pickedWord ? 'bold' : 'normal' }}>{word.word}</td>
+                <td style={{ border: '1px solid black', padding: '0', margin: 0, fontWeight: word.word === pickedWord ? 'bold' : 'normal' }}>{word.word.replace(/\n/g, '\\n').replace(/\t/g, '\\t')}</td>
                 <td style={{ border: '1px solid black', padding: '0', margin: 0, fontWeight: word.word === pickedWord ? 'bold' : 'normal'  }}>{(word.probability * 100).toFixed(2)}%</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div style={{ height: '50%', width: '50%' }}>
+        <div style={{ height: '80%', width: '50%' }}>
           {words.length > 0 && <SpinningWheel
             words={words}
             onStop={(word) => {
@@ -69,8 +68,8 @@ function App() {
               setPickedWord(word)
             }}
             />}
-          </div>
         </div>
+      </div>
     </div>
   );
 }

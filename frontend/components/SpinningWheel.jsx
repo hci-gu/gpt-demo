@@ -19,18 +19,42 @@ function SpinningWheel({ words, angle, onStop }) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const total = words.reduce((sum, word) => sum + word.probability, 0);
-    let startAngle = angle;
+    let startAngle = -angle ;
     for (const word of words) {
       const probability = word.probability / total;
       const endAngle = startAngle + probability * 2 * Math.PI;
+      const sliceMiddle = startAngle + probability * Math.PI;
+      const radius = canvas.height / 2 - 10;
+      const x = canvas.width / 2 + radius * Math.cos(sliceMiddle);
+      const y = canvas.height / 2 + radius * Math.sin(sliceMiddle);
+      const rotationAngle = sliceMiddle + Math.PI / 2; // rotate by 90 degrees to be tangential to the circle
+      ctx.save(); // save the current context state
+      ctx.translate(x, y); // move the context to the center of the label
+      ctx.rotate(rotationAngle); // rotate the context by the rotation angle
+      ctx.fillStyle = 'black';
+      ctx.font = '14px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(word.word, 0, 0); // draw the label at (0, 0)
+      ctx.restore(); // restore the saved context state
       ctx.beginPath();
       ctx.moveTo(canvas.width / 2, canvas.height / 2);
-      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.height / 2, startAngle, endAngle);
+      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.height / 2 - 20, startAngle, endAngle);
       ctx.closePath();
       ctx.fillStyle = word.color || 'gray';
       ctx.fill();
       startAngle = endAngle;
     }
+
+    // Draw arrow
+    ctx.beginPath();
+    ctx.moveTo(canvas.width - 2, canvas.height / 2 - 5);
+    ctx.lineTo(canvas.width - 2, canvas.height / 2 + 5);
+    ctx.lineTo(canvas.width - 15, canvas.height / 2);
+    ctx.closePath();
+    ctx.fillStyle = 'black';
+    ctx.fill();
+
   }, [words, angle]);
 
   return (
@@ -99,6 +123,17 @@ function SpinningWheelAnimator({ words, onStop }) {
     setStopped(true);
     setAngularVelocity(0);
   }
+
+  // add keyboard listener for shift space and then stop wheel
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === ' ' && e.shiftKey) {
+        stopWheel();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [])
 
   return (
     <SpinningWheel words={words} angle={angle} onStop={stopWheel} />
